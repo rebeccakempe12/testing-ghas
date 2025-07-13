@@ -1,0 +1,23 @@
+name: Golang SAST using Gosec
+on: [push, pull_request]
+
+jobs:
+  gosec:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.22'  # Use a newer Go version
+
+      - name: Install Gosec
+        run: go install github.com/securego/gosec/v2/cmd/gosec@latest
+
+      - name: Run Gosec
+        continue-on-error: true
+        run: |
+          export PATH=$PATH:$(go env GOPATH)/bin
+          gosec ./...
